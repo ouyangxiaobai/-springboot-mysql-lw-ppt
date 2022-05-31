@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- "章" mybatis mapper file . generate by codebuilder -->
+<mapper namespace="com.superCode.dao.CourseDao">
+
+    <!-- 通过主键集合批量删除 -->
+    <delete id="batchDelete">
+        delete from course where course_id in 
+        <foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!-- 统计 -->
+    <select id="count" resultType="long" useCache="false" parameterType="map">
+        select count(1) from course where 1=1 
+        
+        <if test="course_name != null and course_name != ''">
+            and course_name = #{course_name}
+        </if>
+        <if test="course_name_like != null and course_name_like != ''">
+            and course_name like CONCAT('%',#{course_name_like},'%')
+        </if>
+        <if test="course_head != null and course_head != ''">
+            and course_head = #{course_head}
+        </if>
+        <if test="course_head_like != null and course_head_like != ''">
+            and course_head like CONCAT('%',#{course_head_like},'%')
+        </if>
+    </select>
+
+    <!-- 通过主键删除 -->
+    <delete id="deleteById" parameterType="long">
+        delete from course where course_id = #{course_id}
+    </delete>
+
+    <!-- 通过主键编号获得map对象 -->
+    <select id="getMapById" resultType="map" useCache="false" parameterType="long">
+        select * from course where course_id = #{course_id}
+    </select>
+
+    <!-- 插入 -->
+    <insert id="insert" parameterType="map" keyProperty="course_id" useGeneratedKeys="true">
+        insert into course
+            (
+               
+                course_name,
+                course_head
+            )values(
+               
+                #{course_name},
+                #{course_head}
+            )
+    </insert>
+
+    <!-- 查询列表 -->
+    <select id="queryList" resultType="hashmap" useCache="false" parameterType="map">
+        select
+            
+            course_id,
+            course_name,
+            course_head
+        from course where 1=1 
+       
+        <if test="course_name != null and course_name != ''">
+            and course_name = #{course_name}
+        </if>
+        <if test="course_name_like != null and course_name_like != ''">
+            and course_name like CONCAT('%',#{course_name_like},'%')
+        </if>
+        <if test="course_head != null and course_head != ''">
+            and course_head = #{course_head}
+        </if>
+        <if test="course_head_like != null and course_head_like != ''">
+            and course_head like CONCAT('%',#{course_head_like},'%')
+        </if>
+        order by course_id
+    </select>
+
+    <!-- 获得分页列表 -->
+    <select id="queryPageList" resultType="hashmap" useCache="false" parameterType="map">
+        select
+               
+            course_id,
+            course_name,
+            course_head
+        from course where 1=1 
+        
+        <if test="course_name != null and course_name != ''">
+            and course_name = #{course_name}
+        </if>
+        <if test="course_name_like != null and course_name_like != ''">
+            and course_name like CONCAT('%',#{course_name_like},'%')
+        </if>
+        <if test="course_head != null and course_head != ''">
+            and course_head = #{course_head}
+        </if>
+        <if test="course_head_like != null and course_head_like != ''">
+            and course_head like CONCAT('%',#{course_head_like},'%')
+        </if>
+        order by course_id
+        limit #{start},#{limit}
+    </select>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="map">
+        update course  set
+             
+            course_name = #{course_name},
+            course_head = #{course_head}
+        where course_id = #{course_id}
+    </update>
+
+</mapper>

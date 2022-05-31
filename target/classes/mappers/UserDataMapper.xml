@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- "用户信息" mybatis mapper file . generate by codebuilder -->
+<mapper namespace="com.superCode.dao.UserDataDao">
+
+    <!-- 通过主键集合批量删除 -->
+    <delete id="batchDelete">
+        delete from user_data where user_id in 
+        <foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!-- 统计 -->
+    <select id="count" resultType="long" useCache="false" parameterType="map">
+        select count(1) from user_data where 1=1 
+        <if test="user_phone != null and user_phone != ''">
+            and user_phone = #{user_phone}
+        </if>
+        <if test="user_phone_like != null and user_phone_like != ''">
+            and user_phone like CONCAT('%',#{user_phone_like},'%')
+        </if>
+        <if test="user_name != null and user_name != ''">
+            and user_name = #{user_name}
+        </if>
+        <if test="user_name_like != null and user_name_like != ''">
+            and user_name like CONCAT('%',#{user_name_like},'%')
+        </if>
+        <if test="user_address_like != null and user_address_like != ''">
+            and user_address like CONCAT('%',#{user_address_like},'%')
+        </if>
+    </select>
+
+    <!-- 通过主键删除 -->
+    <delete id="deleteById" parameterType="long">
+        delete from user_data where user_id = #{user_id}
+    </delete>
+
+    <!-- 通过主键编号获得map对象 -->
+    <select id="getMapById" resultType="map" useCache="false" parameterType="long">
+        select * from user_data where user_id = #{user_id}
+    </select>
+
+    <!-- 插入 -->
+    <insert id="insert" parameterType="map" keyProperty="user_id" useGeneratedKeys="true">
+        insert into user_data
+            (
+                user_phone,
+                user_name
+            )values(
+                #{user_phone},
+                #{user_name}
+            )
+    </insert>
+
+    <!-- 查询列表 -->
+    <select id="queryList" resultType="hashmap" useCache="false" parameterType="map">
+        select
+            *
+        from user_data where 1=1 
+        <if test="user_phone != null and user_phone != ''">
+            and user_phone = #{user_phone}
+        </if>
+        <if test="user_phone_like != null and user_phone_like != ''">
+            and user_phone like CONCAT('%',#{user_phone_like},'%')
+        </if>
+        <if test="user_name != null and user_name != ''">
+            and user_name = #{user_name}
+        </if>
+        <if test="user_name_like != null and user_name_like != ''">
+            and user_name like CONCAT('%',#{user_name_like},'%')
+        </if>
+        <if test="user_address_like != null and user_address_like != ''">
+            and user_address like CONCAT('%',#{user_address_like},'%')
+        </if>
+    </select>
+
+    <!-- 获得分页列表 -->
+    <select id="queryPageList" resultType="hashmap" useCache="false" parameterType="map">
+        select
+            *
+        from user_data where 1=1 
+        <if test="user_phone != null and user_phone != ''">
+            and user_phone = #{user_phone}
+        </if>
+        <if test="user_phone_like != null and user_phone_like != ''">
+            and user_phone like CONCAT('%',#{user_phone_like},'%')
+        </if>
+        <if test="user_name != null and user_name != ''">
+            and user_name = #{user_name}
+        </if>
+        <if test="user_name_like != null and user_name_like != ''">
+            and user_name like CONCAT('%',#{user_name_like},'%')
+        </if>
+        <if test="user_address_like != null and user_address_like != ''">
+            and user_address like CONCAT('%',#{user_address_like},'%')
+        </if>
+        order by user_score desc
+        limit #{start},#{limit}
+    </select>
+
+   <!-- 分数 -->
+    <update id="updatescore" parameterType="map">
+        update user_data set
+            user_score = #{user_score}
+        where user_id = #{user_id}
+    </update>
+    <!-- 更新 -->
+    <update id="update" parameterType="map">
+        update user_data set
+            user_phone = #{user_phone},
+             <if test="user_head != null and user_head != ''">
+            	user_head = #{user_head},
+             </if>
+             <if test="user_address != null and user_address != ''">
+            	user_address = #{user_address},
+             </if>
+            user_name = #{user_name}
+        where user_id = #{user_id}
+    </update>
+    <!-- 更新 -->
+    <update id="updateHead" parameterType="map">
+        update user_data set
+           user_head = #{user_head}
+        where user_id = #{user_id}
+    </update>
+
+</mapper>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- "试卷判定" mybatis mapper file . generate by codebuilder -->
+<mapper namespace="com.superCode.dao.ExamResultDao">
+
+    <!-- 通过主键集合批量删除 -->
+    <delete id="batchDelete">
+        delete from exam_result where result_id in 
+        <foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!-- 统计 -->
+    <select id="count" resultType="long" useCache="false" parameterType="map">
+        select count(1) from exam_result where 1=1 
+        <if test="exam_id != null">
+            and exam_id = #{exam_id}
+        </if>
+        <if test="user_id != null">
+            and user_id = #{user_id}
+        </if>
+        <if test="result_content != null">
+            and result_content = #{result_content}
+        </if>
+        <if test="result_commit_datetime != null and result_commit_datetime != ''">
+            and result_commit_datetime = #{result_commit_datetime}
+        </if>
+        <if test="result_commit_datetime_like != null and result_commit_datetime_like != ''">
+            and result_commit_datetime like CONCAT('%',#{result_commit_datetime_like},'%')
+        </if>
+        <if test="result_score != null">
+            and result_score = #{result_score}
+        </if>
+    </select>
+
+    <!-- 通过主键删除 -->
+    <delete id="deleteById" parameterType="long">
+        delete from exam_result where result_id = #{result_id}
+    </delete>
+
+    <!-- 通过主键编号获得map对象 -->
+    <select id="getMapById" resultType="map" useCache="false" parameterType="long">
+        select * from exam_result where result_id = #{result_id}
+    </select>
+
+    <!-- 插入 -->
+    <insert id="insert" parameterType="map" keyProperty="result_id" useGeneratedKeys="true">
+        insert into exam_result
+            (
+                exam_id,
+                user_id,
+                result_content,
+                result_commit_datetime,
+                result_score
+            )values(
+                #{exam_id},
+                #{user_id},
+                #{result_content},
+                #{result_commit_datetime},
+                #{result_score}
+            )
+    </insert>
+
+    <!-- 查询列表 -->
+    <select id="queryList" resultType="hashmap" useCache="false" parameterType="map">
+        select
+            exam_result.*,
+            user_data.*
+        from exam_result 
+        left join user_data on exam_result.user_id = user_data.user_id
+        where 1=1 
+        <if test="exam_id != null">
+            and exam_id = #{exam_id}
+        </if>
+        <if test="user_id != null">
+            and exam_result.user_id = #{user_id}
+        </if>
+        <if test="result_content != null">
+            and result_content = #{result_content}
+        </if>
+        <if test="result_commit_datetime != null and result_commit_datetime != ''">
+            and result_commit_datetime = #{result_commit_datetime}
+        </if>
+        <if test="result_commit_datetime_like != null and result_commit_datetime_like != ''">
+            and result_commit_datetime like CONCAT('%',#{result_commit_datetime_like},'%')
+        </if>
+        <if test="result_score != null">
+            and result_score = #{result_score}
+        </if>
+    </select>
+
+    <!-- 获得分页列表 -->
+    <select id="queryPageList" resultType="hashmap" useCache="false" parameterType="map">
+        select
+            exam_result.*,
+            user_data.*
+        from exam_result 
+        left join user_data on exam_result.user_id = user_data.user_id
+        where 1=1 
+        <if test="exam_id != null">
+            and exam_id = #{exam_id}
+        </if>
+        <if test="user_id != null">
+            and exam_result.user_id = #{user_id}
+        </if>
+        <if test="result_content != null">
+            and result_content = #{result_content}
+        </if>
+        <if test="result_commit_datetime != null and result_commit_datetime != ''">
+            and result_commit_datetime = #{result_commit_datetime}
+        </if>
+        <if test="result_commit_datetime_like != null and result_commit_datetime_like != ''">
+            and result_commit_datetime like CONCAT('%',#{result_commit_datetime_like},'%')
+        </if>
+        <if test="result_score != null">
+            and result_score = #{result_score}
+        </if>
+        order by result_score desc
+        limit #{start},#{limit}
+    </select>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="map">
+        update exam_result set
+            result_score = #{result_score},
+            result_state = 1
+        where result_id = #{result_id}
+    </update>
+
+</mapper>

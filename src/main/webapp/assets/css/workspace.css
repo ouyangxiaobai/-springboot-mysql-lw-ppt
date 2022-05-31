@@ -1,0 +1,176 @@
+.layui-footer1 {
+	/*µ×²¿*/
+	position: fixed;
+	left: 0px;
+	right: 0;
+	bottom: 0;
+	height: 60px;
+	line-height: 60px;
+	padding: 0 15px;
+	background-color: #373D41;
+	text-align: center;
+	font-weight: bold;
+	color: #fff;
+}
+
+.layui-logo11 {
+	font-weight: bold;
+	font-size: 32px;
+	color: #ffffff;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 300px;
+	height: 100%;
+	line-height: 60px;
+	text-align: center;
+}
+
+.body-aa {
+	margin-bottom: 60px;
+}
+
+.layui-layout-admin .layui-header {
+	background-color: #1D2124 !important;
+}
+
+.layui-nav .layui-nav-item a {
+	color: #000000 !important;
+}
+
+.chapter_online .list_aa {
+	width: 100%;
+	position: absolute;
+}
+
+.list_aa li {
+	float: left;
+	width: 100%;
+	overflow: hidden;
+}
+
+.product_ul {
+	width: 100%;
+	padding-top: 25px;
+}
+
+.product_ul li {
+	width: 150px;
+	margin-right: 34px;
+	margin-bottom: 26px;
+	height: 250px;
+	position: relative;
+	overflow: visible;
+}
+
+.product_ul a.img, .chapter_online .product_ul li img {
+	width: 150px;
+	display: block;
+	height: 150px;
+}
+
+.product_ul li .name {
+	padding: 7px 20px 0;
+	height: 35px;
+	line-height: 18px;
+	overflow: hidden;
+}
+
+.product_ul li .author {
+	padding: 0 20px;
+	height: 24px;
+	line-height: 24px;
+	overflow: hidden;
+	color: #aaa;
+}
+
+.product_ul li .price {
+	padding-left: 20px;
+	line-height: 16px;
+	overflow: hidden;
+	font-family: "Arial";
+	font-size: 14px;
+	position: relative;
+	height: 24px;
+}
+
+.product_ul li .borrow {
+	padding-left: 20px;
+	line-height: 16px;
+	overflow: hidden;
+	font-family: "Arial";
+	font-size: 14px;
+	position: relative;
+}
+
+.chapter_online .product_ul li .author {
+	padding: 0 20px;
+	height: 24px;
+	line-height: 24px;
+	overflow: hidden;
+	color: #aaa;
+}
+
+.product_tags {
+	width: 56px !important;
+	height: 56px !important;
+	position: absolute;
+	right: -5px;
+	top: -5px;
+	color: #fff;
+	font: bold 12px/18px Arial;
+	overflow: hidden;
+	text-align: center;
+	text-decoration: none;
+}
+
+.product_ul li .price .rob {
+	color: #c30;
+	float: left;
+	overflow: hidden;
+	font-weight: bold;
+	margin-right: 12px;
+}
+
+.product_ul li .price .price_r {
+	color: #aaa;
+	text-decoration: line-through;
+	float: left;
+	overflow: hidden;
+}
+
+.layui-collapse-parent-title {
+	background-color: #F5F5F5;
+}
+
+.layui-timeline-content img {
+	width: 80px;
+}
+
+.layui-author {
+	margin-left: 5px;
+	margin-right: 5px;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	cursor: pointer;
+	font-size: 12px;
+}
+
+.layui-author:hover {
+	background-color: #fa5000;
+	color: white;
+}
+
+.chapterlist-author {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.borrow-status {
+	font-size: 12px;
+	height: 40px !important;
+}

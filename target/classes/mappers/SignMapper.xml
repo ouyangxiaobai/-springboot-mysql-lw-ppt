@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- "用户签到" mybatis mapper file . generate by codebuilder -->
+<mapper namespace="com.superCode.dao.SignDao">
+
+    <!-- 通过主键集合批量删除 -->
+    <delete id="batchDelete">
+        delete from user_sign where id in 
+        <foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!-- 统计 -->
+    <select id="count" resultType="long" useCache="false" parameterType="map">
+        select count(1) from user_sign where 1=1 
+        <if test="user_id != null">
+            and user_id = #{user_id}
+        </if>
+        <if test="sign_datetime != null and sign_datetime != ''">
+            and sign_datetime = #{sign_datetime}
+        </if>
+        <if test="sign_datetime_like != null and sign_datetime_like != ''">
+            and sign_datetime like CONCAT('%',#{sign_datetime_like},'%')
+        </if>
+    </select>
+
+    <!-- 通过主键删除 -->
+    <delete id="deleteById" parameterType="long">
+        delete from user_sign where id = #{id}
+    </delete>
+
+    <!-- 通过主键编号获得map对象 -->
+    <select id="getMapById" resultType="map" useCache="false" parameterType="long">
+        select * from user_sign where id = #{id}
+    </select>
+
+    <!-- 插入 -->
+    <insert id="insert" parameterType="map" keyProperty="id" useGeneratedKeys="true">
+        insert into user_sign
+            (
+                user_id,
+                sign_datetime
+            )values(
+                #{user_id},
+                #{sign_datetime}
+            )
+    </insert>
+
+    <!-- 查询列表 -->
+    <select id="queryList" resultType="hashmap" useCache="false" parameterType="map">
+        select
+            user_sign.*,
+            user_data.*
+        from user_sign 
+        left join user_data on user_sign.user_id = user_data.user_id
+        where 1=1 
+        <if test="user_id != null">
+            and user_sign.user_id = #{user_id}
+        </if>
+        <if test="sign_datetime != null and sign_datetime != ''">
+            and user_sign.sign_datetime = #{sign_datetime}
+        </if>
+        <if test="sign_datetime_like != null and sign_datetime_like != ''">
+            and user_sign.sign_datetime like CONCAT('%',#{sign_datetime_like},'%')
+        </if>
+        order by user_sign.sign_datetime desc
+    </select>
+
+    <!-- 获得分页列表 -->
+    <select id="queryPageList" resultType="hashmap" useCache="false" parameterType="map">
+        select
+            user_sign.*,
+            user_data.*
+        from user_sign 
+        left join user_data on user_sign.user_id = user_data.user_id
+        where 1=1 
+        <if test="user_id != null">
+            and user_sign.user_id = #{user_id}
+        </if>
+        <if test="user_name_like != null and user_name_like != ''">
+            and user_data.user_name like CONCAT('%',#{user_name_like},'%')
+        </if>
+        <if test="sign_datetime != null and sign_datetime != ''">
+            and user_sign.sign_datetime = #{sign_datetime}
+        </if>
+        <if test="sign_datetime_like != null and sign_datetime_like != ''">
+            and user_sign.sign_datetime like CONCAT('%',#{sign_datetime_like},'%')
+        </if>
+        order by user_sign.sign_datetime desc
+        limit #{start},#{limit}
+    </select>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="map">
+        update user_sign set
+            user_id = #{user_id},
+            sign_datetime = #{sign_datetime}
+        where id = #{id}
+    </update>
+
+</mapper>

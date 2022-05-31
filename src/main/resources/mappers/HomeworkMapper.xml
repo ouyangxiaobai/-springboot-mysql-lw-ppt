@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- "作业" mybatis mapper file . generate by codebuilder -->
+<mapper namespace="com.superCode.dao.HomeworkDao">
+
+    <!-- 通过主键集合批量删除 -->
+    <delete id="batchDelete">
+        delete from homework where homework_id in 
+        <foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!-- 统计 -->
+    <select id="count" resultType="long" useCache="false" parameterType="map">
+        select count(1) from homework where 1=1 
+        <if test="section_id != null">
+            and section_id = #{section_id}
+        </if>
+        <if test="homework_publish_datetime != null and homework_publish_datetime != ''">
+            and homework_publish_datetime = #{homework_publish_datetime}
+        </if>
+        <if test="homework_publish_datetime_like != null and homework_publish_datetime_like != ''">
+            and homework_publish_datetime like CONCAT('%',#{homework_publish_datetime_like},'%')
+        </if>
+        <if test="homework_title != null and homework_title != ''">
+            and homework_title = #{homework_title}
+        </if>
+        <if test="homework_title_like != null and homework_title_like != ''">
+            and homework_title like CONCAT('%',#{homework_title_like},'%')
+        </if>
+        <if test="homework_content != null and homework_content != ''">
+            and homework_content = #{homework_content}
+        </if>
+        <if test="homework_content_like != null and homework_content_like != ''">
+            and homework_content like CONCAT('%',#{homework_content_like},'%')
+        </if>
+    </select>
+
+    <!-- 通过主键删除 -->
+    <delete id="deleteById" parameterType="long">
+        delete from homework where homework_id = #{homework_id}
+    </delete>
+
+    <!-- 通过主键编号获得map对象 -->
+    <select id="getMapById" resultType="map" useCache="false" parameterType="long">
+        select * from homework where homework_id = #{homework_id}
+    </select>
+
+    <!-- 插入 -->
+    <insert id="insert" parameterType="map" keyProperty="homework_id" useGeneratedKeys="true">
+        insert into homework
+            (
+                section_id,
+                homework_publish_datetime,
+                homework_title,
+                homework_content
+            )values(
+                #{section_id},
+                #{homework_publish_datetime},
+                #{homework_title},
+                #{homework_content}
+            )
+    </insert>
+
+    <!-- 查询列表 -->
+    <select id="queryList" resultType="hashmap" useCache="false" parameterType="map">
+        select
+            homework.*,
+            course_section.*
+        from homework 
+        left join course_section on homework.section_id = course_section.section_id
+        where 1=1 
+        <if test="section_id != null">
+            and homework.section_id = #{section_id}
+        </if>
+        <if test="homework_publish_datetime != null and homework_publish_datetime != ''">
+            and homework_publish_datetime = #{homework_publish_datetime}
+        </if>
+        <if test="homework_publish_datetime_like != null and homework_publish_datetime_like != ''">
+            and homework_publish_datetime like CONCAT('%',#{homework_publish_datetime_like},'%')
+        </if>
+        <if test="homework_title != null and homework_title != ''">
+            and homework_title = #{homework_title}
+        </if>
+        <if test="homework_title_like != null and homework_title_like != ''">
+            and homework_title like CONCAT('%',#{homework_title_like},'%')
+        </if>
+        <if test="homework_content != null and homework_content != ''">
+            and homework_content = #{homework_content}
+        </if>
+        <if test="homework_content_like != null and homework_content_like != ''">
+            and homework_content like CONCAT('%',#{homework_content_like},'%')
+        </if>
+        order by homework_publish_datetime desc
+    </select>
+    
+    <!-- 查询个人作业列表（包含所有未提交和已提交的） -->
+    <select id="querySelfList" resultType="hashmap" useCache="false" parameterType="map">
+        select
+            homework.*,
+            ha.*
+        from homework 
+        left join 
+        (SELECT * FROM homework_answer WHERE 1=1 
+        <if test="user_id != null">
+            and user_id = #{user_id}
+        </if>
+        ) ha on homework.homework_id = ha.homework_id
+        where 1=1 
+        <if test="section_id != null">
+            and section_id = #{section_id}
+        </if>
+        <if test="homework_publish_datetime != null and homework_publish_datetime != ''">
+            and homework_publish_datetime = #{homework_publish_datetime}
+        </if>
+        <if test="homework_publish_datetime_like != null and homework_publish_datetime_like != ''">
+            and homework_publish_datetime like CONCAT('%',#{homework_publish_datetime_like},'%')
+        </if>
+        <if test="homework_title != null and homework_title != ''">
+            and homework_title = #{homework_title}
+        </if>
+        <if test="homework_title_like != null and homework_title_like != ''">
+            and homework_title like CONCAT('%',#{homework_title_like},'%')
+        </if>
+        <if test="homework_content != null and homework_content != ''">
+            and homework_content = #{homework_content}
+        </if>
+        <if test="homework_content_like != null and homework_content_like != ''">
+            and homework_content like CONCAT('%',#{homework_content_like},'%')
+        </if>
+        order by homework_publish_datetime desc
+    </select>
+
+    <!-- 获得分页列表 -->
+    <select id="queryPageList" resultType="hashmap" useCache="false" parameterType="map">
+        select
+            homework.*,
+            course_section.section_id,course_section.course_id,
+                course_section.chapter_id,
+                CONCAT(course.course_name,' ',course_chapter.chapter_name,' ',course_section.section_name) AS section_name,
+                course_section.section_info,
+                course_section.section_head,
+                course_section.section_video_path,
+                course_section.section_files
+        from homework 
+        left join course_section on homework.section_id = course_section.section_id
+          left join course_chapter on course_section.chapter_id = course_chapter.chapter_id
+        left join course  on course.course_id = course_chapter.course_id
+     where 1=1 
+        <if test="section_id != null">
+            and homework.section_id = #{section_id}
+        </if>
+        <if test="homework_publish_datetime != null and homework_publish_datetime != ''">
+            and homework_publish_datetime = #{homework_publish_datetime}
+        </if>
+        <if test="homework_publish_datetime_like != null and homework_publish_datetime_like != ''">
+            and homework_publish_datetime like CONCAT('%',#{homework_publish_datetime_like},'%')
+        </if>
+        <if test="homework_title != null and homework_title != ''">
+            and homework_title = #{homework_title}
+        </if>
+        <if test="homework_title_like != null and homework_title_like != ''">
+            and homework_title like CONCAT('%',#{homework_title_like},'%')
+        </if>
+        <if test="homework_content != null and homework_content != ''">
+            and homework_content = #{homework_content}
+        </if>
+        <if test="homework_content_like != null and homework_content_like != ''">
+            and homework_content like CONCAT('%',#{homework_content_like},'%')
+        </if>
+        limit #{start},#{limit}
+    </select>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="map">
+        update homework set
+            section_id = #{section_id},
+            homework_title = #{homework_title},
+            homework_content = #{homework_content}
+        where homework_id = #{homework_id}
+    </update>
+
+</mapper>

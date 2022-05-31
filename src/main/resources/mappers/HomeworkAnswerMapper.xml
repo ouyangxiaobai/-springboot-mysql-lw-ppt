@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- "作业提交内容" mybatis mapper file . generate by codebuilder -->
+<mapper namespace="com.superCode.dao.HomeworkAnswerDao">
+
+    <!-- 通过主键集合批量删除 -->
+    <delete id="batchDelete">
+        delete from homework_answer where answer_id in 
+        <foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!-- 统计 -->
+    <select id="count" resultType="long" useCache="false" parameterType="map">
+        select count(1) from homework_answer where 1=1 
+        <if test="homework_id != null">
+            and homework_id = #{homework_id}
+        </if>
+        <if test="user_id != null">
+            and user_id = #{user_id}
+        </if>
+        <if test="answer_content != null and answer_content != ''">
+            and answer_content = #{answer_content}
+        </if>
+        <if test="answer_content_like != null and answer_content_like != ''">
+            and answer_content like CONCAT('%',#{answer_content_like},'%')
+        </if>
+        <if test="answer_commit_datetime != null and answer_commit_datetime != ''">
+            and answer_commit_datetime = #{answer_commit_datetime}
+        </if>
+        <if test="answer_commit_datetime_like != null and answer_commit_datetime_like != ''">
+            and answer_commit_datetime like CONCAT('%',#{answer_commit_datetime_like},'%')
+        </if>
+        <if test="homework_score != null and homework_score != ''">
+            and homework_score = #{homework_score}
+        </if>
+        <if test="homework_score_like != null and homework_score_like != ''">
+            and homework_score like CONCAT('%',#{homework_score_like},'%')
+        </if>
+        <if test="homework_remark != null and homework_remark != ''">
+            and homework_remark = #{homework_remark}
+        </if>
+        <if test="homework_remark_like != null and homework_remark_like != ''">
+            and homework_remark like CONCAT('%',#{homework_remark_like},'%')
+        </if>
+    </select>
+
+    <!-- 通过主键删除 -->
+    <delete id="deleteById" parameterType="long">
+        delete from homework_answer where answer_id = #{answer_id}
+    </delete>
+
+    <!-- 通过主键编号获得map对象 -->
+    <select id="getMapById" resultType="map" useCache="false" parameterType="long">
+        select * from homework_answer where answer_id = #{answer_id}
+    </select>
+
+    <!-- 插入 -->
+    <insert id="insert" parameterType="map" keyProperty="answer_id" useGeneratedKeys="true">
+        insert into homework_answer
+            (
+                homework_id,
+                user_id,
+                answer_content,
+                answer_commit_datetime,
+                homework_score,
+                homework_remark
+            )values(
+                #{homework_id},
+                #{user_id},
+                #{answer_content},
+                #{answer_commit_datetime},
+                #{homework_score},
+                #{homework_remark}
+            )
+    </insert>
+
+    <!-- 查询列表 -->
+    <select id="queryList" resultType="hashmap" useCache="false" parameterType="map">
+        select
+            homework_answer.*
+        from homework_answer 
+        left join user_data on homework_answer.user_id = user_data.user_id
+        where 1=1 
+        <if test="homework_id != null">
+            and homework_answer.homework_id = #{homework_id}
+        </if>
+        <if test="user_id != null">
+            and homework_answer.user_id = #{user_id}
+        </if>
+        <if test="answer_content != null and answer_content != ''">
+            and answer_content = #{answer_content}
+        </if>
+        <if test="answer_content_like != null and answer_content_like != ''">
+            and answer_content like CONCAT('%',#{answer_content_like},'%')
+        </if>
+        <if test="answer_commit_datetime != null and answer_commit_datetime != ''">
+            and answer_commit_datetime = #{answer_commit_datetime}
+        </if>
+        <if test="answer_commit_datetime_like != null and answer_commit_datetime_like != ''">
+            and answer_commit_datetime like CONCAT('%',#{answer_commit_datetime_like},'%')
+        </if>
+        <if test="homework_score != null and homework_score != ''">
+            and homework_score = #{homework_score}
+        </if>
+        <if test="homework_score_like != null and homework_score_like != ''">
+            and homework_score like CONCAT('%',#{homework_score_like},'%')
+        </if>
+        <if test="homework_remark != null and homework_remark != ''">
+            and homework_remark = #{homework_remark}
+        </if>
+        <if test="homework_remark_like != null and homework_remark_like != ''">
+            and homework_remark like CONCAT('%',#{homework_remark_like},'%')
+        </if>
+    </select>
+
+    <!-- 获得分页列表 -->
+    <select id="queryPageList" resultType="hashmap" useCache="false" parameterType="map">
+        select
+            homework_answer.*,
+            user_data.*
+        from homework_answer 
+        left join user_data on homework_answer.user_id = user_data.user_id
+        where 1=1 
+        <if test="homework_id != null">
+            and homework_answer.homework_id = #{homework_id}
+        </if>
+        <if test="user_id != null">
+            and homework_answer.user_id = #{user_id}
+        </if>
+        <if test="answer_content != null and answer_content != ''">
+            and answer_content = #{answer_content}
+        </if>
+        <if test="answer_content_like != null and answer_content_like != ''">
+            and answer_content like CONCAT('%',#{answer_content_like},'%')
+        </if>
+        <if test="answer_commit_datetime != null and answer_commit_datetime != ''">
+            and answer_commit_datetime = #{answer_commit_datetime}
+        </if>
+        <if test="answer_commit_datetime_like != null and answer_commit_datetime_like != ''">
+            and answer_commit_datetime like CONCAT('%',#{answer_commit_datetime_like},'%')
+        </if>
+        <if test="homework_score != null and homework_score != ''">
+            and homework_score = #{homework_score}
+        </if>
+        <if test="homework_score_like != null and homework_score_like != ''">
+            and homework_score like CONCAT('%',#{homework_score_like},'%')
+        </if>
+        <if test="homework_remark != null and homework_remark != ''">
+            and homework_remark = #{homework_remark}
+        </if>
+        <if test="homework_remark_like != null and homework_remark_like != ''">
+            and homework_remark like CONCAT('%',#{homework_remark_like},'%')
+        </if>
+        order by answer_id
+        limit #{start},#{limit}
+    </select>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="map">
+        update homework_answer set
+            homework_score = #{homework_score},
+            homework_remark = #{homework_remark}
+        where answer_id = #{answer_id}
+    </update>
+
+</mapper>

@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- "节" mybatis mapper file . generate by codebuilder -->
+<mapper namespace="com.superCode.dao.SectionDao">
+
+    <!-- 通过主键集合批量删除 -->
+    <delete id="batchDelete">
+        delete from course_section where section_id in 
+        <foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!-- 统计 -->
+    <select id="count" resultType="long" useCache="false" parameterType="map">
+        select count(1) from course_section where 1=1 
+        <if test="course_id != null">
+            and course_id = #{course_id}
+        </if>
+        <if test="chapter_id != null">
+            and chapter_id = #{chapter_id}
+        </if>
+        <if test="section_name != null and section_name != ''">
+            and section_name = #{section_name}
+        </if>
+        <if test="section_name_like != null and section_name_like != ''">
+            and section_name like CONCAT('%',#{section_name_like},'%')
+        </if>
+        <if test="section_info != null and section_info != ''">
+            and section_info = #{section_info}
+        </if>
+        <if test="section_info_like != null and section_info_like != ''">
+            and section_info like CONCAT('%',#{section_info_like},'%')
+        </if>
+        <if test="section_video_path != null and section_video_path != ''">
+            and section_video_path = #{section_video_path}
+        </if>
+        <if test="section_video_path_like != null and section_video_path_like != ''">
+            and section_video_path like CONCAT('%',#{section_video_path_like},'%')
+        </if>
+        <if test="section_files != null">
+            and section_files = #{section_files}
+        </if>
+    </select>
+
+    <!-- 通过主键删除 -->
+    <delete id="deleteById" parameterType="long">
+        delete from course_section where section_id = #{section_id}
+    </delete>
+
+    <!-- 通过主键编号获得map对象 -->
+    <select id="getMapById" resultType="map" useCache="false" parameterType="long">
+        select course_section.section_id,course_section.course_id,
+                course_section.chapter_id,
+                 course_section.section_name ,
+                CONCAT(course.course_name,' ',course_chapter.chapter_name,' ',course_section.section_name) AS all_section_name,
+                course_section.section_info,
+                course_section.section_head,
+                course_section.section_video_path,
+                course_section.section_files,
+            course_chapter.*
+        from course_section 
+        left join course_chapter on course_section.chapter_id = course_chapter.chapter_id
+           left join course  on course.course_id = course_chapter.course_id
+     where section_id = #{section_id}
+    </select>
+
+    <!-- 插入 -->
+    <insert id="insert" parameterType="map" keyProperty="section_id" useGeneratedKeys="true">
+        insert into course_section
+            (
+                course_id,
+                chapter_id,
+                section_name,
+                section_info,
+                section_head,
+                section_video_path,
+                section_files
+            )values(
+                #{course_id},
+                #{chapter_id},
+                #{section_name},
+                #{section_info},
+                #{section_head},
+                #{section_video_path},
+                #{section_files}
+            )
+    </insert>
+
+    <!-- 查询列表 -->
+    <select id="queryList" resultType="hashmap" useCache="false" parameterType="map">
+        select
+        course_section.section_id,course_section.course_id,
+        course_section.chapter_id,
+        CONCAT(course.course_name,' ',course_chapter.chapter_name,' ',course_section.section_name) AS section_name,
+        course_section.section_info,
+        course_section.section_head,
+        course_section.section_video_path,
+        course_section.section_files,
+        course_chapter.*
+        from course_section
+        left join course_chapter on course_section.chapter_id = course_chapter.chapter_id
+        left join course  on course.course_id = course_chapter.course_id
+        where 1=1
+        <if test="course_id != null">
+            and course_section.course_id = #{course_id}
+        </if>
+        <if test="chapter_id != null">
+            and course_section.chapter_id = #{chapter_id}
+        </if>
+        <if test="section_name != null and section_name != ''">
+            and section_name = #{section_name}
+        </if>
+        <if test="section_name_like != null and section_name_like != ''">
+            and section_name like CONCAT('%',#{section_name_like},'%')
+        </if>
+        <if test="section_info != null and section_info != ''">
+            and section_info = #{section_info}
+        </if>
+        <if test="section_info_like != null and section_info_like != ''">
+            and section_info like CONCAT('%',#{section_info_like},'%')
+        </if>
+        <if test="section_video_path != null and section_video_path != ''">
+            and section_video_path = #{section_video_path}
+        </if>
+        <if test="section_video_path_like != null and section_video_path_like != ''">
+            and section_video_path like CONCAT('%',#{section_video_path_like},'%')
+        </if>
+        <if test="section_files != null">
+            and section_files = #{section_files}
+        </if>
+        order by section_id
+    </select>
+
+    <!-- 获得分页列表 -->
+    <select id="queryPageList" resultType="hashmap" useCache="false" parameterType="map">
+        select
+            course_section.section_id,course_section.course_id,
+                course_section.chapter_id,
+                CONCAT(course.course_name,' ',course_chapter.chapter_name,' ',course_section.section_name) AS section_name,
+                course_section.section_info,
+                course_section.section_head,
+                course_section.section_video_path,
+                course_section.section_files,
+            course_chapter.*
+        from course_section 
+        left join course_chapter on course_section.chapter_id = course_chapter.chapter_id
+        left join course  on course.course_id = course_chapter.course_id
+        where 1=1 
+        <if test="course_id != null">
+            and course_section.course_id = #{course_id}
+        </if>
+        <if test="chapter_id != null">
+            and course_section.chapter_id = #{chapter_id}
+        </if>
+        <if test="section_name != null and section_name != ''">
+            and section_name = #{section_name}
+        </if>
+        <if test="section_name_like != null and section_name_like != ''">
+            and section_name like CONCAT('%',#{section_name_like},'%')
+        </if>
+        <if test="section_info != null and section_info != ''">
+            and section_info = #{section_info}
+        </if>
+        <if test="section_info_like != null and section_info_like != ''">
+            and section_info like CONCAT('%',#{section_info_like},'%')
+        </if>
+        <if test="section_video_path != null and section_video_path != ''">
+            and section_video_path = #{section_video_path}
+        </if>
+        <if test="section_video_path_like != null and section_video_path_like != ''">
+            and section_video_path like CONCAT('%',#{section_video_path_like},'%')
+        </if>
+        <if test="section_files != null">
+            and section_files = #{section_files}
+        </if>
+        order by section_id
+        limit #{start},#{limit}
+    </select>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="map">
+        update course_section set
+            course_id = #{course_id},
+            chapter_id = #{chapter_id},
+            section_name = #{section_name},
+            section_info = #{section_info},
+            section_video_path = #{section_video_path},
+            section_files = #{section_files}
+        where section_id = #{section_id}
+    </update>
+
+</mapper>

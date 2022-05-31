@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- "问题提交内容" mybatis mapper file . generate by codebuilder -->
+<mapper namespace="com.superCode.dao.QuestionDao">
+
+    <!-- 通过主键集合批量删除 -->
+    <delete id="batchDelete">
+        delete from question where question_id in 
+        <foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!-- 统计 -->
+    <select id="count" resultType="long" useCache="false" parameterType="map">
+        select count(1) from question where 1=1 
+        <if test="user_id != null">
+            and user_id = #{user_id}
+        </if>
+        <if test="section_id != null">
+            and section_id = #{section_id}
+        </if>
+        <if test="question_ask != null and question_ask != ''">
+            and question_ask = #{question_ask}
+        </if>
+        <if test="question_ask_like != null and question_ask_like != ''">
+            and question_ask like CONCAT('%',#{question_ask_like},'%')
+        </if>
+        <if test="question_ask_datetime != null and question_ask_datetime != ''">
+            and question_ask_datetime = #{question_ask_datetime}
+        </if>
+        <if test="question_ask_datetime_like != null and question_ask_datetime_like != ''">
+            and question_ask_datetime like CONCAT('%',#{question_ask_datetime_like},'%')
+        </if>
+        <if test="question_answer != null and question_answer != ''">
+            and question_answer = #{question_answer}
+        </if>
+        <if test="question_answer_like != null and question_answer_like != ''">
+            and question_answer like CONCAT('%',#{question_answer_like},'%')
+        </if>
+        <if test="question_answer_datetime != null and question_answer_datetime != ''">
+            and question_answer_datetime = #{question_answer_datetime}
+        </if>
+        <if test="question_answer_datetime_like != null and question_answer_datetime_like != ''">
+            and question_answer_datetime like CONCAT('%',#{question_answer_datetime_like},'%')
+        </if>
+    </select>
+
+    <!-- 通过主键删除 -->
+    <delete id="deleteById" parameterType="long">
+        delete from question where question_id = #{question_id}
+    </delete>
+
+    <!-- 通过主键编号获得map对象 -->
+    <select id="getMapById" resultType="map" useCache="false" parameterType="long">
+        select * from question where question_id = #{question_id}
+    </select>
+
+    <!-- 插入 -->
+    <insert id="insert" parameterType="map" keyProperty="question_id" useGeneratedKeys="true">
+        insert into question
+            (
+                user_id,
+                section_id,
+                question_ask,
+                question_ask_datetime,
+                question_answer,
+                question_answer_datetime
+            )values(
+                #{user_id},
+                #{section_id},
+                #{question_ask},
+                #{question_ask_datetime},
+                #{question_answer},
+                #{question_answer_datetime}
+            )
+    </insert>
+
+    <!-- 查询列表 -->
+    <select id="queryList" resultType="hashmap" useCache="false" parameterType="map">
+        select
+            question.*,
+            user_data.*,
+            course_section.*,
+            course_chapter.*
+        from question 
+        left join user_data on question.user_id = user_data.user_id
+        left join course_section on question.section_id = course_section.section_id
+        left join course_chapter on course_section.chapter_id = course_chapter.chapter_id
+        where 1=1 
+        <if test="user_id != null">
+            and question.user_id = #{user_id}
+        </if>
+        <if test="section_id != null">
+            and question.section_id = #{section_id}
+        </if>
+        <if test="question_ask != null and question_ask != ''">
+            and question_ask = #{question_ask}
+        </if>
+        <if test="question_ask_like != null and question_ask_like != ''">
+            and question_ask like CONCAT('%',#{question_ask_like},'%')
+        </if>
+        <if test="question_ask_datetime != null and question_ask_datetime != ''">
+            and question_ask_datetime = #{question_ask_datetime}
+        </if>
+        <if test="question_ask_datetime_like != null and question_ask_datetime_like != ''">
+            and question_ask_datetime like CONCAT('%',#{question_ask_datetime_like},'%')
+        </if>
+        <if test="question_answer != null and question_answer != ''">
+            and question_answer = #{question_answer}
+        </if>
+        <if test="question_answer_like != null and question_answer_like != ''">
+            and question_answer like CONCAT('%',#{question_answer_like},'%')
+        </if>
+        <if test="question_answer_datetime != null and question_answer_datetime != ''">
+            and question_answer_datetime = #{question_answer_datetime}
+        </if>
+        <if test="question_answer_datetime_like != null and question_answer_datetime_like != ''">
+            and question_answer_datetime like CONCAT('%',#{question_answer_datetime_like},'%')
+        </if>
+        order by question_ask_datetime desc
+    </select>
+
+    <!-- 获得分页列表 -->
+    <select id="queryPageList" resultType="hashmap" useCache="false" parameterType="map">
+        select
+            question.*,
+            user_data.*,
+            course_section.*,
+            course_chapter.chapter_id,
+            course_chapter.course_id,
+            CONCAT(course.course_name,' ',course_chapter.chapter_name,' ',course_section.section_name) AS chapter_name,
+            course_chapter.chapter_head
+        from question 
+        left join user_data on question.user_id = user_data.user_id
+        left join course_section on question.section_id = course_section.section_id
+        left join course_chapter on course_section.chapter_id = course_chapter.chapter_id
+          left join course  on course.course_id = course_chapter.course_id
+       where 1=1 
+        <if test="user_id != null">
+            and question.user_id = #{user_id}
+        </if>
+        <if test="section_id != null">
+            and question.section_id = #{section_id}
+        </if>
+        <if test="question_ask != null and question_ask != ''">
+            and question_ask = #{question_ask}
+        </if>
+        <if test="question_ask_like != null and question_ask_like != ''">
+            and question_ask like CONCAT('%',#{question_ask_like},'%')
+        </if>
+        <if test="question_ask_datetime != null and question_ask_datetime != ''">
+            and question_ask_datetime = #{question_ask_datetime}
+        </if>
+        <if test="question_ask_datetime_like != null and question_ask_datetime_like != ''">
+            and question_ask_datetime like CONCAT('%',#{question_ask_datetime_like},'%')
+        </if>
+        <if test="question_answer != null and question_answer != ''">
+            and question_answer = #{question_answer}
+        </if>
+        <if test="question_answer_like != null and question_answer_like != ''">
+            and question_answer like CONCAT('%',#{question_answer_like},'%')
+        </if>
+        <if test="question_answer_datetime != null and question_answer_datetime != ''">
+            and question_answer_datetime = #{question_answer_datetime}
+        </if>
+        <if test="question_answer_datetime_like != null and question_answer_datetime_like != ''">
+            and question_answer_datetime like CONCAT('%',#{question_answer_datetime_like},'%')
+        </if>
+        order by question_ask_datetime desc
+        limit #{start},#{limit}
+    </select>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="map">
+        update question set
+            question_answer = #{question_answer},
+            question_answer_datetime = #{question_answer_datetime}
+        where question_id = #{question_id}
+    </update>
+
+</mapper>

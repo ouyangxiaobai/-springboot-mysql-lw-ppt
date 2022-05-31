@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- "考试" mybatis mapper file . generate by codebuilder -->
+<mapper namespace="com.superCode.dao.ExamDao">
+
+    <!-- 通过主键集合批量删除 -->
+    <delete id="batchDelete">
+        delete from exam where exam_id in 
+        <foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!-- 统计 -->
+    <select id="count" resultType="long" useCache="false" parameterType="map">
+        select count(1) from exam where 1=1 
+        <if test="chapter_id != null">
+            and chapter_id = #{chapter_id}
+        </if>
+        <if test="exam_title != null and exam_title != ''">
+            and exam_title = #{exam_title}
+        </if>
+        <if test="exam_title_like != null and exam_title_like != ''">
+            and exam_title like CONCAT('%',#{exam_title_like},'%')
+        </if>
+        <if test="exam_content != null">
+            and exam_content = #{exam_content}
+        </if>
+        <if test="exam_publish_datetime != null and exam_publish_datetime != ''">
+            and exam_publish_datetime = #{exam_publish_datetime}
+        </if>
+        <if test="exam_publish_datetime_like != null and exam_publish_datetime_like != ''">
+            and exam_publish_datetime like CONCAT('%',#{exam_publish_datetime_like},'%')
+        </if>
+    </select>
+
+    <!-- 通过主键删除 -->
+    <delete id="deleteById" parameterType="long">
+        delete from exam where exam_id = #{exam_id}
+    </delete>
+
+    <!-- 通过主键编号获得map对象 -->
+    <select id="getMapById" resultType="map" useCache="false" parameterType="long">
+        select * from exam where exam_id = #{exam_id}
+    </select>
+
+    <!-- 插入 -->
+    <insert id="insert" parameterType="map" keyProperty="exam_id" useGeneratedKeys="true">
+        insert into exam
+            (
+                chapter_id,
+                exam_title,
+                exam_content,
+                exam_publish_datetime
+            )values(
+                #{chapter_id},
+                #{exam_title},
+                #{exam_content},
+                #{exam_publish_datetime}
+            )
+    </insert>
+
+    <!-- 查询列表 -->
+    <select id="queryList" resultType="hashmap" useCache="false" parameterType="map">
+        select
+            exam.*,
+            course_chapter.*
+        from exam 
+        left join course_chapter on exam.chapter_id = course_chapter.chapter_id
+        where 1=1 
+        <if test="chapter_id != null">
+            and exam.chapter_id = #{chapter_id}
+        </if>
+        <if test="exam_title != null and exam_title != ''">
+            and exam_title = #{exam_title}
+        </if>
+        <if test="exam_title_like != null and exam_title_like != ''">
+            and exam_title like CONCAT('%',#{exam_title_like},'%')
+        </if>
+        <if test="exam_content != null">
+            and exam_content = #{exam_content}
+        </if>
+        <if test="exam_publish_datetime != null and exam_publish_datetime != ''">
+            and exam_publish_datetime = #{exam_publish_datetime}
+        </if>
+        <if test="exam_publish_datetime_like != null and exam_publish_datetime_like != ''">
+            and exam_publish_datetime like CONCAT('%',#{exam_publish_datetime_like},'%')
+        </if>
+        order by exam_publish_datetime desc
+    </select>
+
+    <!-- 查询个人考试列表（包含所有未提交和已提交的） -->
+    <select id="querySelfList" resultType="hashmap" useCache="false" parameterType="map">
+        select
+            exam.*,
+            er.*
+        from exam 
+        left join 
+        (SELECT * FROM exam_result WHERE 1=1 
+        <if test="user_id != null">
+            and user_id = #{user_id}
+        </if>
+        ) er on exam.exam_id = er.exam_id
+        where 1=1 
+        <if test="chapter_id != null">
+            and chapter_id = #{chapter_id}
+        </if>
+        order by exam_publish_datetime desc
+    </select>
+
+    <!-- 获得分页列表 -->
+    <select id="queryPageList" resultType="hashmap" useCache="false" parameterType="map">
+        select
+            exam.*,
+            course_chapter.chapter_id,
+            course_chapter.course_id,
+            CONCAT(course.course_name,' ',course_chapter.chapter_name) AS chapter_name,
+            course_chapter.chapter_head
+        from exam 
+        left join course_chapter on exam.chapter_id = course_chapter.chapter_id
+         left join course  on course.course_id = course_chapter.course_id
+       where 1=1 
+        <if test="chapter_id != null">
+            and exam.chapter_id = #{chapter_id}
+        </if>
+        <if test="exam_title != null and exam_title != ''">
+            and exam_title = #{exam_title}
+        </if>
+        <if test="exam_title_like != null and exam_title_like != ''">
+            and exam_title like CONCAT('%',#{exam_title_like},'%')
+        </if>
+        <if test="exam_content != null">
+            and exam_content = #{exam_content}
+        </if>
+        <if test="exam_publish_datetime != null and exam_publish_datetime != ''">
+            and exam_publish_datetime = #{exam_publish_datetime}
+        </if>
+        <if test="exam_publish_datetime_like != null and exam_publish_datetime_like != ''">
+            and exam_publish_datetime like CONCAT('%',#{exam_publish_datetime_like},'%')
+        </if>
+        order by exam_publish_datetime desc
+        limit #{start},#{limit}
+    </select>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="map">
+        update exam set
+            chapter_id = #{chapter_id},
+            exam_title = #{exam_title},
+            exam_content = #{exam_content}
+        where exam_id = #{exam_id}
+    </update>
+
+</mapper>

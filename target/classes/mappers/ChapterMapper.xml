@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- "章" mybatis mapper file . generate by codebuilder -->
+<mapper namespace="com.superCode.dao.ChapterDao">
+
+    <!-- 通过主键集合批量删除 -->
+    <delete id="batchDelete">
+        delete from course_chapter where chapter_id in 
+        <foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!-- 统计 -->
+    <select id="count" resultType="long" useCache="false" parameterType="map">
+        select count(1) from course_chapter where 1=1 
+        <if test="course_id != null">
+            and course_id = #{course_id}
+        </if>
+        <if test="chapter_name != null and chapter_name != ''">
+            and chapter_name = #{chapter_name}
+        </if>
+        <if test="chapter_name_like != null and chapter_name_like != ''">
+            and chapter_name like CONCAT('%',#{chapter_name_like},'%')
+        </if>
+        <if test="chapter_head != null and chapter_head != ''">
+            and chapter_head = #{chapter_head}
+        </if>
+        <if test="chapter_head_like != null and chapter_head_like != ''">
+            and chapter_head like CONCAT('%',#{chapter_head_like},'%')
+        </if>
+    </select>
+
+    <!-- 通过主键删除 -->
+    <delete id="deleteById" parameterType="long">
+        delete from course_chapter where chapter_id = #{chapter_id}
+    </delete>
+
+    <!-- 通过主键编号获得map对象 -->
+    <select id="getMapById" resultType="map" useCache="false" parameterType="long">
+        select
+                    course_chapter.chapter_id,
+            course_chapter.course_id,
+             course_chapter.chapter_name ,
+            CONCAT(course.course_name,' ',course_chapter.chapter_name) AS all_chapter_name,
+            course_chapter.chapter_head
+
+         from course_chapter,course where chapter_id = #{chapter_id} AND course.course_id= course_chapter.course_id
+    </select>
+
+    <!-- 插入 -->
+    <insert id="insert" parameterType="map" keyProperty="chapter_id" useGeneratedKeys="true">
+        insert into course_chapter
+            (
+                course_id,
+                chapter_name,
+                chapter_head
+            )values(
+                #{course_id},
+                #{chapter_name},
+                #{chapter_head}
+            )
+    </insert>
+
+    <!-- 查询列表 -->
+    <select id="queryList" resultType="hashmap" useCache="false" parameterType="map">
+        select
+            course_chapter.chapter_id,
+            course_chapter.course_id,
+            CONCAT(course.course_name,' ',course_chapter.chapter_name) AS chapter_name,
+            course_chapter.chapter_head
+        from course_chapter,course where 1=1 AND course.course_id= course_chapter.course_id
+        <if test="course_id != null">
+            and course_chapter.course_id = #{course_id}
+        </if>
+        <if test="chapter_name != null and chapter_name != ''">
+            and course_chapter.chapter_name = #{chapter_name}
+        </if>
+        <if test="chapter_name_like != null and chapter_name_like != ''">
+            and course_chapter.chapter_name like CONCAT('%',#{chapter_name_like},'%')
+        </if>
+        <if test="chapter_head != null and chapter_head != ''">
+            and course_chapter.chapter_head = #{chapter_head}
+        </if>
+        <if test="chapter_head_like != null and chapter_head_like != ''">
+            and course_chapter.chapter_head like CONCAT('%',#{chapter_head_like},'%')
+        </if>
+        order by course_chapter.chapter_id
+    </select>
+
+    <!-- 获得分页列表 -->
+    <select id="queryPageList" resultType="hashmap" useCache="false" parameterType="map">
+        select
+            course_chapter.chapter_id,
+            course_chapter.course_id,
+            CONCAT(course.course_name,' ',course_chapter.chapter_name) AS chapter_name,
+            course_chapter.chapter_head
+        from course_chapter,course where 1=1 AND course.course_id= course_chapter.course_id
+        <if test="course_id != null">
+            and course_chapter.course_id = #{course_id}
+        </if>
+        <if test="chapter_name != null and chapter_name != ''">
+            and course_chapter.chapter_name = #{chapter_name}
+        </if>
+        <if test="chapter_name_like != null and chapter_name_like != ''">
+            and course_chapter.chapter_name like CONCAT('%',#{chapter_name_like},'%')
+        </if>
+        <if test="chapter_head != null and chapter_head != ''">
+            and course_chapter.chapter_head = #{chapter_head}
+        </if>
+        <if test="chapter_head_like != null and chapter_head_like != ''">
+            and course_chapter.chapter_head like CONCAT('%',#{chapter_head_like},'%')
+        </if>
+        order by chapter_id
+        limit #{start},#{limit}
+    </select>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="map">
+        update course_chapter set
+            course_id = #{course_id},
+            chapter_name = #{chapter_name},
+            chapter_head = #{chapter_head}
+        where chapter_id = #{chapter_id}
+    </update>
+
+</mapper>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- "用户密码" mybatis mapper file . generate by codebuilder -->
+<mapper namespace="com.superCode.dao.UserPwdDao">
+
+    <!-- 通过主键集合批量删除 -->
+    <delete id="batchDelete">
+        delete from user_password where user_id in 
+        <foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!-- 统计 -->
+    <select id="count" resultType="long" useCache="false" parameterType="map">
+        select count(1) from user_password where 1=1 
+        <if test="user_password != null and user_password != ''">
+            and user_password = #{user_password}
+        </if>
+        <if test="user_password_like != null and user_password_like != ''">
+            and user_password like CONCAT('%',#{user_password_like},'%')
+        </if>
+    </select>
+
+    <!-- 通过主键删除 -->
+    <delete id="deleteById" parameterType="long">
+        delete from user_password where user_id = #{user_id}
+    </delete>
+
+    <!-- 通过主键编号获得map对象 -->
+    <select id="getMapById" resultType="map" useCache="false" parameterType="long">
+        select * from user_password where user_id = #{user_id}
+    </select>
+
+    <!-- 插入 -->
+    <insert id="insert" parameterType="map">
+        insert into user_password
+            (
+                user_id,
+                user_password
+            )values(
+                #{user_id},
+                #{user_password}
+            )
+    </insert>
+
+    <!-- 查询列表 -->
+    <select id="queryList" resultType="hashmap" useCache="false" parameterType="map">
+        select
+            user_id,
+            user_password
+        from user_password where 1=1 
+        <if test="user_password != null and user_password != ''">
+            and user_password = #{user_password}
+        </if>
+        <if test="user_password_like != null and user_password_like != ''">
+            and user_password like CONCAT('%',#{user_password_like},'%')
+        </if>
+    </select>
+
+    <!-- 获得分页列表 -->
+    <select id="queryPageList" resultType="hashmap" useCache="false" parameterType="map">
+        select
+            user_id,
+            user_password
+        from user_password where 1=1 
+        <if test="user_password != null and user_password != ''">
+            and user_password = #{user_password}
+        </if>
+        <if test="user_password_like != null and user_password_like != ''">
+            and user_password like CONCAT('%',#{user_password_like},'%')
+        </if>
+        limit #{start},#{limit}
+    </select>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="map">
+        update user_password set
+            user_password = #{new_user_password}
+        where user_id = #{user_id} and user_password = #{user_password}
+    </update>
+
+</mapper>

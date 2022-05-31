@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- "管理员" mybatis mapper file . generate by codebuilder -->
+<mapper namespace="com.superCode.dao.AdminDao">
+
+    <!-- 通过主键集合批量删除 -->
+    <delete id="batchDelete">
+        delete from admin where admin_name in 
+        <foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <!-- 统计 -->
+    <select id="count" resultType="long" useCache="false" parameterType="map">
+        select count(1) from admin where 1=1 
+        <if test="admin_name_like != null and admin_name_like != ''">
+            and admin_name like CONCAT('%',#{admin_name_like},'%')
+        </if>
+        <if test="admin_name != null and admin_name != ''">
+            and admin_name = #{admin_name}
+        </if>
+        <if test="admin_password!= null and admin_password != ''">
+            and admin_password = #{admin_password}
+        </if>
+        <if test="admin_issystem != null and admin_issystem != ''">
+        	and admin_issystem = #{admin_issystem}
+        </if>
+    </select>
+
+    <!-- 通过主键删除 -->
+    <delete id="deleteById" parameterType="String">
+        delete from admin where admin_name = #{admin_name}
+    </delete>
+
+    <!-- 通过主键编号获得map对象 -->
+    <select id="getMapById" resultType="map" useCache="false" parameterType="String">
+        select * from admin where admin_name = #{admin_name}
+    </select>
+
+    <!-- 插入 -->
+    <insert id="insert" parameterType="map">
+        insert into admin
+            (
+                admin_name,
+                admin_password,
+                admin_issystem
+            )values(
+                #{admin_name},
+                #{admin_password},
+                #{admin_issystem}
+            )
+    </insert>
+
+    <!-- 查询列表 -->
+    <select id="queryList" resultType="hashmap" useCache="false" parameterType="map">
+        select
+            admin_name,
+            admin_password,
+            admin_issystem
+        from admin where 1=1 
+        <if test="admin_name_like != null and admin_name_like != ''">
+            and admin_name like CONCAT('%',#{admin_name_like},'%')
+        </if>
+        <if test="admin_name != null and admin_name != ''">
+            and admin_name = #{admin_name}
+        </if>
+        <if test="admin_password!= null and admin_password != ''">
+            and admin_password = #{admin_password}
+        </if>
+        <if test="admin_issystem != null and admin_issystem != ''">
+        	and admin_issystem = #{admin_issystem}
+        </if>
+        order by admin_issystem desc,admin_name
+    </select>
+
+    <!-- 获得分页列表 -->
+    <select id="queryPageList" resultType="hashmap" useCache="false" parameterType="map">
+        select
+            admin_name,
+            admin_password,
+            admin_issystem
+        from admin where 1=1 
+        <if test="admin_name_like != null and admin_name_like != ''">
+            and admin_name like CONCAT('%',#{admin_name_like},'%')
+        </if>
+        <if test="admin_name != null and admin_name != ''">
+            and admin_name = #{admin_name}
+        </if>
+        <if test="admin_password!= null and admin_password != ''">
+            and admin_password = #{admin_password}
+        </if>
+        <if test="admin_issystem != null and admin_issystem != ''">
+        	and admin_issystem = #{admin_issystem}
+        </if>
+        order by admin_issystem desc,admin_name
+        limit #{start},#{limit}
+    </select>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="map">
+        update admin set
+            admin_name = #{admin_name},
+            admin_password = #{admin_password}
+        where admin_name = #{admin_name}
+    </update>
+
+</mapper>
